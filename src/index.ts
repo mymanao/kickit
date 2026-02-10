@@ -24,8 +24,8 @@ export class KickIt {
       clientSecret: options.auth.clientSecret,
       auth: {
         initialTokens: {
-          access_token: options.auth.accessTokens,
-          refresh_token: options.auth.refreshTokens
+          access_token: options.auth.accessToken,
+          refresh_token: options.auth.refreshToken
         }
       },
       scopes: options.auth.scopes,

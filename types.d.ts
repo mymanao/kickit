@@ -14,8 +14,8 @@ export interface KickItOptions {
   auth: {
     clientId: string;
     clientSecret: string;
-    accessTokens: string;
-    refreshTokens: string;
+    accessToken: string;
+    refreshToken: string;
     scopes: KickScopes[];
   };
   ngrok?: NgrokOptions;
