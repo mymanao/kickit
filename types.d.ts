@@ -1,5 +1,6 @@
 import type { ChatMessageEvent, KickScopes } from "@manaobot/kick/types";
 import { KickClient } from "@manaobot/kick";
+import type { KickIt } from "./src";
 
 export interface NgrokOptions {
   authtoken?: string;
@@ -21,6 +22,7 @@ export interface KickItOptions {
 }
 
 export interface KickItContext {
+  bot: KickIt;
   client: KickClient;
   event: ChatMessageEvent;
   args: string[];

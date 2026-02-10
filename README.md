@@ -38,10 +38,10 @@ KickIt does **not** replace the SDK — it extends it with a simple developer ex
 bun add @manaobot/kickit
 ```
 
-KickIt requires:
+KickIt optionally supports ngrok for local development. To enable ngrok support, also install the ngrok package:
 
 ```bash
-bun add @manaobot/kick
+bun add @ngrok/ngrok
 ```
 
 ---
@@ -49,7 +49,7 @@ bun add @manaobot/kick
 ## 🚀 Quick Start
 
 ```ts
-import { KickIt } from "@manaobot/kickit";
+import {KickIt} from "../src";
 
 const bot = new KickIt({
   prefix: "!",
@@ -58,20 +58,27 @@ const bot = new KickIt({
     clientSecret: Bun.env.KICK_CLIENT_SECRET!,
     accessTokens: Bun.env.KICK_ACCESS_TOKEN!,
     refreshTokens: Bun.env.KICK_REFRESH_TOKEN!,
-    scopes: [
-      "chat:write",
-      "events:subscribe",
-      "channel:read"
-    ],
+    scopes: ["chat:write", "events:subscribe", "moderation:ban", "channel:read"],
   },
   ngrok: {
     authtoken: Bun.env.NGROK_AUTHTOKEN,
-    domain: "your-domain.ngrok-free.app",
+    domain: "topical-goshawk-leading.ngrok-free.app",
+    port: 5000,
+    path: "/kick/webhook",
   },
 });
 
 bot.command("ping", async (ctx) => {
   await ctx.reply("pong 🏓");
+});
+
+bot.command("love", async (ctx) => {
+  const target = ctx.args.join(" ") || ctx.event.sender.username;
+  const percent = Math.floor(Math.random() * 101);
+
+  await ctx.reply(
+    `${ctx.event.sender.username} ❤️ ${target}: ${percent}%`
+  );
 });
 
 await bot.start();
