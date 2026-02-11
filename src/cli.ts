@@ -13,6 +13,7 @@ function parseCli() {
       clientSecret: { type: "string", short: "s" },
       scopes: { type: "string" },
       "save-env": { type: "boolean" },
+      port: { type: "string", short: "p" },
     },
     strict: true,
     allowPositionals: true,
@@ -21,8 +22,9 @@ function parseCli() {
   return values;
 }
 
+const values = parseCli();
+
 async function resolveConfig() {
-  const values = parseCli();
 
   if (!values.scopes) {
     throw new Error(
@@ -102,13 +104,13 @@ async function handleTokens(tokens: KickTokenResponse, saveEnv: boolean) {
   process.exit(0);
 }
 
-async function run() {
+async function run(port: number) {
   const config = await resolveConfig();
 
   const kick = new KickClient({
     clientId: config.clientId,
     clientSecret: config.clientSecret,
-    redirectUri: "http://localhost:3000/callback",
+    redirectUri: `http://localhost:${port}/callback`,
     scopes: config.scopes,
     showLog: false,
     auth: {
@@ -116,10 +118,10 @@ async function run() {
     },
   });
 
-  kick.auth.createCallbackServer({ port: 3000 });
+  kick.auth.createCallbackServer({ port });
 
   await open(kick.getAuthURL());
   await kick.auth.waitForAuthorization();
 }
 
-await run();
+await run(parseInt(<string>values.port ?? 3000));

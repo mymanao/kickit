@@ -1,6 +1,6 @@
 {
   "name": "@manaobot/kickit",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Kick.com bot framework using Manao's kick library",
   "author": "Tinnaphat Somsang <tinvv@outlook.co.th>",
   "main": "src/index.ts",
