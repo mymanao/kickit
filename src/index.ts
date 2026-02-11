@@ -29,7 +29,7 @@ export class KickIt {
         }
       },
       scopes: options.auth.scopes,
-      redirectUri: "http://localhost:3000/callback",
+      redirectUri: options.auth.redirectUri || `http://localhost:${options.auth.port || 3000}/callback`,
     });
   }
 

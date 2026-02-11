@@ -9,15 +9,19 @@ export interface NgrokOptions {
   path?: string;
 }
 
+export interface AuthOptions {
+  clientId: string;
+  clientSecret: string;
+  accessToken: string;
+  refreshToken: string;
+  scopes: KickScopes[];
+  port?: number;
+  redirectUri?: string;
+};
+
 export interface KickItOptions {
   prefix?: string;
-  auth: {
-    clientId: string;
-    clientSecret: string;
-    accessToken: string;
-    refreshToken: string;
-    scopes: KickScopes[];
-  };
+  auth: AuthOptions;
   ngrok?: NgrokOptions;
 }
 
