@@ -105,6 +105,7 @@ async function handleTokens(tokens: KickTokenResponse, saveEnv: boolean) {
 
   console.log("\n[!] Tokens have been saved to your .env file.");
   console.log(`\n====> Scopes granted: ${tokens.scope}`);
+  process.exit(0)
 }
 
 async function run(port: number) {
