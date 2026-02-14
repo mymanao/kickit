@@ -5,7 +5,7 @@
       "name": "kickit",
       "dependencies": {
         "@inquirer/prompts": "^8.2.0",
-        "@manaobot/kick": "^1.0.0",
+        "@manaobot/kick": "^1.1.1",
         "open": "^11.0.0",
       },
       "devDependencies": {
@@ -67,7 +67,7 @@
 
     "@inquirer/type": ["@inquirer/type@4.0.3", "", { "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-cKZN7qcXOpj1h+1eTTcGDVLaBIHNMT1Rz9JqJP5MnEJ0JhgVWllx7H/tahUp5YEK1qaByH2Itb8wLG/iScD5kw=="],
 
-    "@manaobot/kick": ["@manaobot/kick@1.0.0", "", { "dependencies": { "consola": "^3.4.2" }, "peerDependencies": { "typescript": "^5" } }, "sha512-8bjszuS+ENhwzP2XDSRSBmr5RgaZQ/6uFOyUwLl+yh4rhkRHt67wq5PeD9og1DftQ7Dj32golPIMtLf3pH+DZQ=="],
+    "@manaobot/kick": ["@manaobot/kick@1.1.1", "", { "dependencies": { "consola": "^3.4.2" }, "peerDependencies": { "typescript": "^5" } }, "sha512-nvNUrmWkY8jaQrBxN7A+6WbwyZvRBcRLMddO1gtavn+/k4KQZKSVTuXecW/qnW4Vbh0KkA/jG8G6zrYM07Gmyg=="],
 
     "@ngrok/ngrok": ["@ngrok/ngrok@1.7.0", "", { "optionalDependencies": { "@ngrok/ngrok-android-arm64": "1.7.0", "@ngrok/ngrok-darwin-arm64": "1.7.0", "@ngrok/ngrok-darwin-universal": "1.7.0", "@ngrok/ngrok-darwin-x64": "1.7.0", "@ngrok/ngrok-freebsd-x64": "1.7.0", "@ngrok/ngrok-linux-arm-gnueabihf": "1.7.0", "@ngrok/ngrok-linux-arm64-gnu": "1.7.0", "@ngrok/ngrok-linux-arm64-musl": "1.7.0", "@ngrok/ngrok-linux-x64-gnu": "1.7.0", "@ngrok/ngrok-linux-x64-musl": "1.7.0", "@ngrok/ngrok-win32-arm64-msvc": "1.7.0", "@ngrok/ngrok-win32-ia32-msvc": "1.7.0", "@ngrok/ngrok-win32-x64-msvc": "1.7.0" } }, "sha512-P06o9TpxrJbiRbHQkiwy/rUrlXRupc+Z8KT4MiJfmcdWxvIdzjCaJOdnNkcOTs6DMyzIOefG5tvk/HLdtjqr0g=="],
 

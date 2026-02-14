@@ -25,10 +25,9 @@ function parseCli() {
 const values = parseCli();
 
 async function resolveConfig() {
-
   if (!values.scopes) {
     throw new Error(
-      "Scopes are required. Please provide them using the --scopes argument.",
+      "Scopes are required. Provide them using --scopes (comma or space separated).",
     );
   }
 
@@ -40,7 +39,10 @@ async function resolveConfig() {
     ? values.clientSecret.trim()
     : (await password({ message: "Enter your Client Secret:" })).trim();
 
-  const rawScopes = values.scopes.split(",").map((s) => s.trim());
+  const rawScopes = values.scopes
+    .split(/[,\s]+/)
+    .map((s: string) => s.trim())
+    .filter(Boolean);
 
   const scopes: KickScopes[] = [];
   const invalid: string[] = [];
@@ -48,6 +50,10 @@ async function resolveConfig() {
   for (const scope of rawScopes) {
     if (isKickScope(scope)) scopes.push(scope);
     else invalid.push(scope);
+  }
+
+  if (!scopes.length) {
+    throw new Error("No valid scopes provided.");
   }
 
   if (invalid.length) {
@@ -63,45 +69,42 @@ async function resolveConfig() {
 }
 
 async function handleTokens(tokens: KickTokenResponse, saveEnv: boolean) {
+  const expiresAt = tokens.expires_at ?? Date.now();
+
   if (!saveEnv) {
     console.log("\n[!] Copy these into your .env file:\n");
     console.log(`KICK_ACCESS_TOKEN=${tokens.access_token}`);
     console.log(`KICK_REFRESH_TOKEN=${tokens.refresh_token}`);
+    console.log(`KICK_EXPIRES_AT=${expiresAt}`);
     console.log(`\n====> Scopes granted: ${tokens.scope}`);
     process.exit(0);
   }
 
   const file = Bun.file(".env");
-
   let envContent = (await file.exists()) ? await file.text() : "";
 
-  const accessTokenRegex = /^KICK_ACCESS_TOKEN=.*$/m;
-  const refreshTokenRegex = /^KICK_REFRESH_TOKEN=.*$/m;
+  const replaceOrAppend = (key: string, value: string) => {
+    const regex = new RegExp(`^${key}=.*$`, "m");
+    const line = `${key}=${value}`;
 
-  if (accessTokenRegex.test(envContent)) {
-    envContent = envContent.replace(
-      accessTokenRegex,
-      `KICK_ACCESS_TOKEN=${tokens.access_token}`,
-    );
-  } else {
-    envContent += `\nKICK_ACCESS_TOKEN=${tokens.access_token}`;
-  }
+    if (regex.test(envContent)) {
+      envContent = envContent.replace(regex, line);
+    } else {
+      if (envContent.length && !envContent.endsWith("\n")) {
+        envContent += "\n";
+      }
+      envContent += line + "\n";
+    }
+  };
 
-  if (refreshTokenRegex.test(envContent)) {
-    envContent = envContent.replace(
-      refreshTokenRegex,
-      `KICK_REFRESH_TOKEN=${tokens.refresh_token}`,
-    );
-  } else {
-    envContent += `\nKICK_REFRESH_TOKEN=${tokens.refresh_token}`;
-  }
+  replaceOrAppend("KICK_ACCESS_TOKEN", tokens.access_token);
+  replaceOrAppend("KICK_REFRESH_TOKEN", tokens.refresh_token);
+  replaceOrAppend("KICK_EXPIRES_AT", String(expiresAt));
 
-  await Bun.write(".env", envContent.trimStart());
+  await Bun.write(".env", envContent);
 
   console.log("\n[!] Tokens have been saved to your .env file.");
   console.log(`\n====> Scopes granted: ${tokens.scope}`);
-
-  process.exit(0);
 }
 
 async function run(port: number) {
@@ -124,4 +127,5 @@ async function run(port: number) {
   await kick.auth.waitForAuthorization();
 }
 
-await run(parseInt(<string>values.port ?? 3000));
+const port = values.port ? parseInt(String(values.port), 10) : 3000;
+await run(Number.isNaN(port) ? 3000 : port);

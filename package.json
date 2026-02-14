@@ -1,15 +1,18 @@
 {
   "name": "@manaobot/kickit",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Kick.com bot framework using Manao's kick library",
   "author": "Tinnaphat Somsang <tinvv@outlook.co.th>",
   "main": "src/index.ts",
+  "repository": {
+    "github": "https://github.com/mymanao/kickit"
+  },
   "bin": {
     "kickIt": "src/cli.ts"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.2.0",
-    "@manaobot/kick": "^1.0.0",
+    "@manaobot/kick": "^1.1.1",
     "open": "^11.0.0"
   },
   "scripts": {

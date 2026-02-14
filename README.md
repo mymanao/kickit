@@ -58,6 +58,7 @@ const bot = new KickIt({
     clientSecret: Bun.env.KICK_CLIENT_SECRET!,
     accessToken: Bun.env.KICK_ACCESS_TOKEN!,
     refreshToken: Bun.env.KICK_REFRESH_TOKEN!,
+    expiresAt: parseInt(Bun.env.KICK_EXPIRES_AT!, 10) || Date.now(),
     scopes: ["chat:write", "events:subscribe", "moderation:ban", "channel:read"],
   },
   ngrok: {

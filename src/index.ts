@@ -25,11 +25,14 @@ export class KickIt {
       auth: {
         initialTokens: {
           access_token: options.auth.accessToken,
-          refresh_token: options.auth.refreshToken
-        }
+          refresh_token: options.auth.refreshToken,
+          expires_at: options.auth.expiresAt,
+        },
       },
       scopes: options.auth.scopes,
-      redirectUri: options.auth.redirectUri || `http://localhost:${options.auth.port || 3000}/callback`,
+      redirectUri:
+        options.auth.redirectUri ||
+        `http://localhost:${options.auth.port || 3000}/callback`,
     });
   }
 
