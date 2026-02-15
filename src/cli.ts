@@ -1,7 +1,7 @@
 import { password } from "@inquirer/prompts";
 import { parseArgs } from "util";
 import type { KickScopes } from "@manaobot/kick/types";
-import { authenticateKick, isKickScope } from "./utils";
+import { authenticateKick, isKickScope } from "../utils";
 
 function parseCli() {
   const { values } = parseArgs({

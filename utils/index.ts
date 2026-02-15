@@ -94,6 +94,6 @@ export async function authenticateKick(config: KickAuthConfig) {
     const url = kick.getAuthURL();
     await open(url);
 
-    await kick.auth.waitForAuthorization();
+    kick.auth.waitForAuthorization().then(process.exit(0));
   });
 }
