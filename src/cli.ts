@@ -1,9 +1,7 @@
 import { password } from "@inquirer/prompts";
 import { parseArgs } from "util";
-import { KickClient } from "@manaobot/kick";
-import type { KickScopes, KickTokenResponse } from "@manaobot/kick/types";
-import open from "open";
-import { isKickScope } from "./utils";
+import type { KickScopes } from "@manaobot/kick/types";
+import { authenticateKick, isKickScope } from "./utils";
 
 function parseCli() {
   const { values } = parseArgs({
@@ -64,68 +62,23 @@ async function resolveConfig() {
     clientId,
     clientSecret,
     scopes,
-    saveEnv: Boolean(values["save-env"]),
+    saveToEnv: Boolean(values["save-env"]),
   };
-}
-
-async function handleTokens(tokens: KickTokenResponse, saveEnv: boolean) {
-  const expiresAt = tokens.expires_at ?? Date.now();
-
-  if (!saveEnv) {
-    console.log("\n[!] Copy these into your .env file:\n");
-    console.log(`KICK_ACCESS_TOKEN=${tokens.access_token}`);
-    console.log(`KICK_REFRESH_TOKEN=${tokens.refresh_token}`);
-    console.log(`KICK_EXPIRES_AT=${expiresAt}`);
-    console.log(`\n====> Scopes granted: ${tokens.scope}`);
-    process.exit(0);
-  }
-
-  const file = Bun.file(".env");
-  let envContent = (await file.exists()) ? await file.text() : "";
-
-  const replaceOrAppend = (key: string, value: string) => {
-    const regex = new RegExp(`^${key}=.*$`, "m");
-    const line = `${key}=${value}`;
-
-    if (regex.test(envContent)) {
-      envContent = envContent.replace(regex, line);
-    } else {
-      if (envContent.length && !envContent.endsWith("\n")) {
-        envContent += "\n";
-      }
-      envContent += line + "\n";
-    }
-  };
-
-  replaceOrAppend("KICK_ACCESS_TOKEN", tokens.access_token);
-  replaceOrAppend("KICK_REFRESH_TOKEN", tokens.refresh_token);
-  replaceOrAppend("KICK_EXPIRES_AT", String(expiresAt));
-
-  await Bun.write(".env", envContent);
-
-  console.log("\n[!] Tokens have been saved to your .env file.");
-  console.log(`\n====> Scopes granted: ${tokens.scope}`);
-  process.exit(0)
 }
 
 async function run(port: number) {
   const config = await resolveConfig();
 
-  const kick = new KickClient({
+  await authenticateKick({
     clientId: config.clientId,
     clientSecret: config.clientSecret,
-    redirectUri: `http://localhost:${port}/callback`,
     scopes: config.scopes,
-    showLog: false,
-    auth: {
-      onTokenUpdate: (tokens) => handleTokens(tokens, config.saveEnv),
-    },
+    port,
+    saveToEnv: config.saveToEnv,
   });
 
-  kick.auth.createCallbackServer({ port });
-
-  await open(kick.getAuthURL());
-  await kick.auth.waitForAuthorization();
+  console.log("\n✔ Authorization completed.");
+  process.exit(0);
 }
 
 const port = values.port ? parseInt(String(values.port), 10) : 3000;
