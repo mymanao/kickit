@@ -1,11 +1,12 @@
 import { KickClient } from "@manaobot/kick";
-import type { ChatMessageEvent } from "@manaobot/kick/types";
+import type {ChatMessageEvent, KickTokenResponse} from "@manaobot/kick/types";
 import type {
   CommandHandler,
   KickItContext,
   KickItOptions,
   NgrokOptions,
 } from "../types";
+import {saveEnv} from "../utils";
 
 export class KickIt {
   private commands = new Map<string, CommandHandler>();
@@ -28,6 +29,19 @@ export class KickIt {
           refresh_token: options.auth.refreshToken,
           expires_at: options.auth.expiresAt,
         },
+        onTokenUpdate: async (tokens: KickTokenResponse) => {
+          options.auth.accessToken = tokens.access_token;
+          options.auth.refreshToken = tokens.refresh_token;
+          options.auth.expiresAt = tokens.expires_at;
+
+          await saveEnv(options.envPath ?? ".env", {
+            KICK_ACCESS_TOKEN: tokens.access_token,
+            KICK_REFRESH_TOKEN: tokens.refresh_token,
+            KICK_EXPIRES_AT: String(tokens.expires_at),
+          });
+
+          console.log(`[✔] Tokens updated. Access token expires at: ${new Date(tokens.expires_at).toLocaleString()}`);
+        }
       },
       scopes: options.auth.scopes,
       redirectUri:

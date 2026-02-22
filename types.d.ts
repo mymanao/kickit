@@ -14,7 +14,7 @@ export interface AuthOptions {
   clientSecret: string;
   accessToken: string;
   refreshToken: string;
-  expiresAt?: number;
+  expiresAt: number;
   scopes: KickScopes[];
   port?: number;
   redirectUri?: string;
@@ -24,6 +24,7 @@ export interface KickItOptions {
   prefix?: string;
   auth: AuthOptions;
   ngrok?: NgrokOptions;
+  envPath?: string;
 }
 
 export interface KickItContext {

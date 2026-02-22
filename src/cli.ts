@@ -69,7 +69,7 @@ async function resolveConfig() {
 async function run(port: number) {
   const config = await resolveConfig();
 
-  await authenticateKick({
+  const c = await authenticateKick({
     clientId: config.clientId,
     clientSecret: config.clientSecret,
     scopes: config.scopes,
@@ -77,8 +77,15 @@ async function run(port: number) {
     saveToEnv: config.saveToEnv,
   });
 
+  if (!config.saveToEnv) {
+    console.log("\nAdd the following to your environment variables:");
+    console.log(`KICK_ACCESS_TOKEN=${c.access_token}`);
+    console.log(`KICK_REFRESH_TOKEN=${c.refresh_token}`);
+    console.log(`KICK_EXPIRES_AT=${c.expires_at}`);
+  }
+  console.log(`==========> Scopes granted: ${config.scopes.join(", ")}`);
+
   console.log("\n✔ Authorization completed.");
-  process.exit(0);
 }
 
 const port = values.port ? parseInt(String(values.port), 10) : 3000;

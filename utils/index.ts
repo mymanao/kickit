@@ -29,7 +29,7 @@ export interface KickAuthConfig {
   envPath?: string;
 }
 
-async function saveEnv(path: string, entries: Record<string, string>) {
+export async function saveEnv(path: string, entries: Record<string, string>) {
   const file = Bun.file(path);
   let envContent = (await file.exists()) ? await file.text() : "";
 
@@ -71,13 +71,11 @@ export async function authenticateKick(config: KickAuthConfig) {
       auth: {
         onTokenUpdate: async (tokens) => {
           try {
-            const expiresAt = tokens.expires_at ?? Date.now();
-
             if (saveToEnv) {
               await saveEnv(envPath, {
                 KICK_ACCESS_TOKEN: tokens.access_token,
                 KICK_REFRESH_TOKEN: tokens.refresh_token,
-                KICK_EXPIRES_AT: String(expiresAt),
+                KICK_EXPIRES_AT: String(tokens.expires_at),
               });
             }
 
