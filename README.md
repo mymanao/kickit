@@ -142,7 +142,7 @@ Local development is easy:
 ```ts
 ngrok: {
   authtoken: "...",
-  domain: "your-domain.ngrok-free.app"
+    domain: "your-domain.ngrok-free.app"
 }
 ```
 
@@ -151,6 +151,76 @@ KickIt automatically:
 - starts webhook server
 - opens ngrok tunnel
 - subscribes to events
+
+---
+
+## 🖥️ CLI
+
+KickIt ships with a built-in CLI tool for authenticating with Kick and obtaining OAuth tokens. This is the fastest way to get your access token, refresh token, and expiry before wiring them into your bot config.
+
+### Usage
+
+```bash
+bunx kickit --clientId <id> --clientSecret <secret> --scopes <scopes>
+```
+
+### Options
+
+| Flag              | Short | Type    | Description                                                                 |
+|-------------------|-------|---------|-----------------------------------------------------------------------------|
+| `--clientId`      | `-i`  | string  | Your Kick application client ID. Prompted interactively if omitted.        |
+| `--clientSecret`  | `-s`  | string  | Your Kick application client secret. Prompted interactively if omitted.    |
+| `--scopes`        |       | string  | Comma or space separated list of OAuth scopes to request. **Required.**    |
+| `--port`          | `-p`  | string  | Local port for the OAuth callback server. Defaults to `3000`.              |
+| `--save-env`      |       | boolean | Automatically write tokens to a `.env` file instead of printing to stdout. |
+
+### Scopes
+
+Pass one or more valid `KickScopes` values separated by commas or spaces:
+
+```bash
+--scopes "chat:write,events:subscribe,channel:read"
+# or
+--scopes "chat:write events:subscribe channel:read"
+```
+
+Invalid scope values are ignored with a warning — the CLI will still proceed if at least one valid scope is provided.
+
+### Examples
+
+**Interactive credential entry (credentials prompted securely):**
+
+```bash
+bunx kickit --scopes "chat:write,events:subscribe"
+```
+
+**Fully non-interactive:**
+
+```bash
+bunx kickit -i your_client_id -s your_client_secret --scopes "chat:write,events:subscribe" --port 4000
+```
+
+**Save tokens directly to `.env`:**
+
+```bash
+bunx kickit -i your_client_id -s your_client_secret --scopes "chat:write" --save-env
+```
+
+### Output
+
+Without `--save-env`, the CLI prints the tokens to stdout so you can copy them into your environment:
+
+```
+Add the following to your environment variables:
+KICK_ACCESS_TOKEN=...
+KICK_REFRESH_TOKEN=...
+KICK_EXPIRES_AT=...
+==========> Scopes granted: chat:write, events:subscribe
+
+✔ Authorization completed.
+```
+
+With `--save-env`, tokens are written to your `.env` file automatically and the above output is skipped.
 
 ---
 
